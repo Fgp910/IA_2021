@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 import game
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -70,7 +71,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -87,7 +89,45 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    abiertos = util.Stack()
+    return generalSearch(problem, util.Stack)
+
+
+def breadthFirstSearch(problem):
+    """Search the shallowest nodes in the search tree first."""
+    "*** YOUR CODE HERE ***"
+    return generalSearch(problem, util.Queue)
+
+
+def uniformCostSearch(problem):
+    """Search the node of least total cost first."""
+    "*** YOUR CODE HERE ***"
+    util.raiseNotDefined()
+
+
+def nullHeuristic(state, problem=None):
+    """
+    A heuristic function estimates the cost from the current state to the nearest
+    goal in the provided SearchProblem.  This heuristic is trivial.
+    """
+    return 0
+
+
+def aStarSearch(problem, heuristic=nullHeuristic):
+    """Search the node that has the lowest combined cost and heuristic first."""
+    "*** YOUR CODE HERE ***"
+    util.raiseNotDefined()
+
+
+# Abbreviations
+bfs = breadthFirstSearch
+dfs = depthFirstSearch
+astar = aStarSearch
+ucs = uniformCostSearch
+
+
+# General search
+def generalSearch(problem, type):
+    abiertos = type()
     cerrados = dict()
     ret = []
 
@@ -112,33 +152,3 @@ def depthFirstSearch(problem):
         m = cerrados[s]
     ret.reverse()
     return ret
-
-
-def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-def nullHeuristic(state, problem=None):
-    """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem.  This heuristic is trivial.
-    """
-    return 0
-
-def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-
-# Abbreviations
-bfs = breadthFirstSearch
-dfs = depthFirstSearch
-astar = aStarSearch
-ucs = uniformCostSearch
