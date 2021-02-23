@@ -16,7 +16,6 @@
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
-import game
 import util
 
 
@@ -131,24 +130,27 @@ def generalSearch(problem, type):
     cerrados = dict()
     ret = []
 
-    cerrados[problem.getStartState()] = None
-    for s in problem.getSuccessors(problem.getStartState()):
-        abiertos.push(s)
+    s = problem.getStartState()
+    if problem.isGoalState(s):
+        return ret
+    cerrados[s] = None
+    for t in problem.getSuccessors(s):
+        abiertos.push((t, s))
 
     while 1:
         s = abiertos.pop()
-        if s[0] not in cerrados.keys():
-            cerrados[s[0]] = game.Actions.reverseDirection(s[1])
-            if problem.isGoalState(s[0]):
+        if s[0][0] not in cerrados.keys():
+            cerrados[s[0][0]] = (s[0][1], s[1])
+            if problem.isGoalState(s[0][0]):
                 break
-            for t in problem.getSuccessors(s[0]):
-                abiertos.push(t)
+            for t in problem.getSuccessors(s[0][0]):
+                abiertos.push((t, s[0][0]))
 
-    s = s[0]
+    s = s[0][0]
     m = cerrados[s]
     while m is not None:
-        ret.append(game.Actions.reverseDirection(m))
-        s = game.Actions.getSuccessor(s, m)
+        ret.append(m[0])
+        s = m[1]
         m = cerrados[s]
     ret.reverse()
     return ret
