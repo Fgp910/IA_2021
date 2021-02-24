@@ -141,7 +141,7 @@ def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic):
     cerrados[s] = None
 
     for t in problem.getSuccessors(s):
-        abiertos.push((t, s))
+        abiertos.push((t, s, t[2]))
 
     while not abiertos.isEmpty():
         s = abiertos.pop()
@@ -150,7 +150,7 @@ def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic):
             if problem.isGoalState(s[0][0]):
                 break
             for t in problem.getSuccessors(s[0][0]):
-                abiertos.push((t, s[0][0]))
+                abiertos.push((t, s[0][0], t[2] + s[2]))
 
     s = s[0][0]
     m = cerrados[s]
