@@ -100,7 +100,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return generalSearch(problem, util.PriorityQueueWithFunction, priorityQueue=True)
 
 
 def nullHeuristic(state, problem=None):
@@ -125,15 +125,21 @@ ucs = uniformCostSearch
 
 
 # General search
-def generalSearch(problem, type):
-    abiertos = type()
-    cerrados = dict() # Hay algoritmos (como bfs o A* con heuristica no consistente) que no usan lista de cerrados
+def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic):
+    if priorityQueue:
+        abiertos = type(lambda node: node[2] + heuristic(node[0], problem))
+    else:
+        abiertos = type()
+
+    cerrados = dict()
     ret = []
 
     s = problem.getStartState()
     if problem.isGoalState(s):
         return ret
+
     cerrados[s] = None
+
     for t in problem.getSuccessors(s):
         abiertos.push((t, s))
 
@@ -152,5 +158,6 @@ def generalSearch(problem, type):
         ret.append(m[0])
         s = m[1]
         m = cerrados[s]
+
     ret.reverse()
     return ret
