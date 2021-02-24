@@ -127,7 +127,7 @@ ucs = uniformCostSearch
 # General search
 def generalSearch(problem, type):
     abiertos = type()
-    cerrados = dict()
+    cerrados = dict() # Hay algoritmos (como bfs o A* con heuristica no consistente) que no usan lista de cerrados
     ret = []
 
     s = problem.getStartState()
@@ -137,7 +137,7 @@ def generalSearch(problem, type):
     for t in problem.getSuccessors(s):
         abiertos.push((t, s))
 
-    while 1:
+    while not abiertos.isEmpty():
         s = abiertos.pop()
         if s[0][0] not in cerrados.keys():
             cerrados[s[0][0]] = (s[0][1], s[1])
