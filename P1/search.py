@@ -140,17 +140,19 @@ def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic):
 
     cerrados[s] = None
 
-    for t in problem.getSuccessors(s):
+    s = (s, 'None', 0)  # search state format (not game state format)
+
+    for t in problem.getSuccessors(s[0]):
         abiertos.push((t, s))
 
     while not abiertos.isEmpty():
         s = abiertos.pop()
         if s[0][0] not in cerrados.keys():
-            cerrados[s[0][0]] = (s[0][1], s[1])
+            cerrados[s[0][0]] = (s[0][1], s[1][0])
             if problem.isGoalState(s[0][0]):
                 break
             for t in problem.getSuccessors(s[0][0]):
-                abiertos.push((t, s[0][0]))
+                abiertos.push((t, s[0]))
 
     s = s[0][0]
     m = cerrados[s]
