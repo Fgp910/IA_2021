@@ -114,7 +114,7 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return generalSearch(problem, util.PriorityQueueWithFunction, True, heuristic)
 
 
 # Abbreviations
@@ -127,7 +127,7 @@ ucs = uniformCostSearch
 # General search
 def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic):
     if priorityQueue:
-        abiertos = type(lambda node: node[0][2] + heuristic(node[0], problem))
+        abiertos = type(lambda node: node[2] + heuristic(node[0][0], problem))
     else:
         abiertos = type()
 
@@ -140,19 +140,17 @@ def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic):
 
     cerrados[s] = None
 
-    s = (s, 'None', 0)  # search state format (not game state format)
-
-    for t in problem.getSuccessors(s[0]):
-        abiertos.push((t, s))
+    for t in problem.getSuccessors(s):
+        abiertos.push((t, s, t[2]))
 
     while not abiertos.isEmpty():
         s = abiertos.pop()
         if s[0][0] not in cerrados.keys():
-            cerrados[s[0][0]] = (s[0][1], s[1][0])
+            cerrados[s[0][0]] = (s[0][1], s[1])
             if problem.isGoalState(s[0][0]):
                 break
             for t in problem.getSuccessors(s[0][0]):
-                abiertos.push((t, s[0]))
+                abiertos.push((t, s[0][0], t[2]+s[2]))
 
     s = s[0][0]
     m = cerrados[s]
