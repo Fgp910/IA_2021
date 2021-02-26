@@ -114,7 +114,7 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    return generalSearch(problem, util.PriorityQueueWithFunction, True, heuristic, True)
+    return generalSearch(problem, util.PriorityQueueWithFunction, True, heuristic)
 
 
 # Abbreviations
@@ -150,7 +150,7 @@ def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic, e
             if problem.isGoalState(s[0][0]):
                 break
             for t in problem.getSuccessors(s[0][0]):
-                abiertos.push((t, s[0][0], t[2]+s[2]))
+                abiertos.push((t, s[0][0], t[2] + s[2]))
 
     s = s[0][0]
     m = cerrados[s]
