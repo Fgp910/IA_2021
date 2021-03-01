@@ -359,6 +359,43 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+def maxWallLenght(xy1, xy2, walls):
+    if xy1 is None or xy2 is None:
+        return 0
+
+    littlex, bigx = sorted([xy1[0], xy2[0]])
+    littley, bigy = sorted([xy1[1], xy2[1]])
+    maxim = 0
+
+    if littlex == bigx:
+        sign = 1 if bigx < walls.width / 2 else -1  # 1 if we are at the leftmost column
+        for i in range(littley + 1, bigy + 1):
+            if walls[bigx][i]:  # Finds wall
+                cost = 1
+                j = bigx + sign
+                while walls[j][i] and 0 < j < walls.width:  # Computes how long is it
+                    cost += 1
+                    j += sign
+                if cost > maxim:
+                    maxim = cost
+        return maxim
+
+    if littley == bigy:
+        sign = 1 if bigy < walls.height / 2 else -1  # 1 if we are at the bottom row
+        for i in range(littlex + 1, bigx + 1):
+            if walls[i][bigy]:  # Finds wall
+                cost = 1
+                j = bigy + sign
+                while walls[i][j] and 0 < j < walls.height:  # Computes how long is it
+                    cost += 1
+                    j += sign
+                if cost > maxim:
+                    maxim = cost
+        return maxim
+
+    return 0
+
+
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -377,27 +414,40 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     x, y, *_ = state
-    short, long = sorted([walls.height - 3, walls.width - 3]) # Dimensions of the corners' rectangle
+    short, long = sorted([walls.height - 3, walls.width - 3])  # Dimensions of the corners' rectangle
 
-    h = 0
-    notvisited = 0
     minim = 999999
+    notvisited = []
     for i in range(4):
         if not state[i + 2]:
-            d = util.manhattanDistance((x,y), corners[i])
-            minim = d if d < minim else minim
-            notvisited += 1
+            notvisited.append(corners[i])
 
-    if notvisited > 0:
-        h = minim
-    if notvisited > 1:
-        h += short
-    if notvisited > 2:
-        h += long
-    if notvisited > 3:
-        h += short
+    if len(notvisited) == 0:
+        return 0
 
-    return h
+    for current in notvisited:
+        samex = None
+        samey = None
+        opposite = None
+        for corner in notvisited:
+            if corner[0] != current[0] and corner[1] != current[1]:
+                opposite = corner
+            elif corner[0] != current[0]:
+                samey = corner
+            elif corner[1] != current[1]:
+                samex = corner
+
+        h = util.manhattanDistance((x, y), current)
+        if len(notvisited) > 1:
+            h += short + 2 * maxWallLenght(current, samex, walls)
+        if len(notvisited) > 2:
+            h += long + 2 * maxWallLenght(samex, opposite, walls)
+        if len(notvisited) > 3:
+            h += short + 2 * maxWallLenght(opposite, samey, walls)
+        if h < minim:
+            minim = h
+
+    return minim if minim < 999999 else 0
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
