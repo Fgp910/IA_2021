@@ -382,15 +382,15 @@ def cornersHeuristic(state, problem):
     h = 0
     while len(notvisited) > 0:
         minim = 999999
-        next = None
+        nextCorner = None
         for corner in notvisited:
             d = util.manhattanDistance(current, corner)
             if d < minim:
                 minim = d
-                next = corner
+                nextCorner = corner
         h += minim
-        current = next
-        notvisited = [corner for corner in notvisited if corner != next]
+        current = nextCorner
+        notvisited = [corner for corner in notvisited if corner != nextCorner]
 
     return h  # In a word, h is the shortest path one would take in a wall-less maze
 

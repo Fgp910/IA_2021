@@ -125,11 +125,20 @@ ucs = uniformCostSearch
 
 
 # General search
-def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic, enabledRepetition = False):
+def generalSearch(problem, listType, priorityQueue=False, heuristic=nullHeuristic, enableRepetition=False):
+    """
+        problem: The problem to solve
+        listType: The util class for the open nodes' list (Stack, Queue, PriorityQueue, ...)
+        priorityQueue: If type = PriorityQueueWithFunction
+        heuristic: The heuristic for the problem (only if priorityQueue = True)
+        enabledRepetition: If repeated nodes are allowed in the open nodes' list
+
+    This method executes a general search algorithm and returns the list of actions that lead to a solution.
+    """
     if priorityQueue:
-        abiertos = type(lambda node: node[2] + heuristic(node[0][0], problem))
+        abiertos = listType(lambda node: node[2] + heuristic(node[0][0], problem))
     else:
-        abiertos = type()
+        abiertos = listType()
 
     cerrados = dict()
     ret = []
@@ -145,7 +154,7 @@ def generalSearch(problem, type, priorityQueue=False, heuristic=nullHeuristic, e
 
     while not abiertos.isEmpty():
         s = abiertos.pop()
-        if s[0][0] not in cerrados.keys() or enabledRepetition:
+        if s[0][0] not in cerrados.keys() or enableRepetition:
             cerrados[s[0][0]] = (s[0][1], s[1])
             if problem.isGoalState(s[0][0]):
                 break
