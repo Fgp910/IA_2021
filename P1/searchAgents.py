@@ -11,6 +11,8 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+# Inteligencia Artificial (grupo 2301).
+# Pareja 4: Leandro García y Fabián Gutiérrez.
 
 """
 This file contains all of the agents that can be selected to control Pacman.  To
