@@ -205,5 +205,84 @@ class MinimaxAlphaBetaStrategy(Strategy):
         """Compute next state in the game."""
 
         # NOTE <YOUR CODE HERE>
+        successors = self.generate_successors(state)
+        minimax_value = -np.inf
+        alpha = -np.inf
+        beta = np.inf
+        next_state = None
 
+        for successor in successors:
+            minimax_value_successor, alpha_s, beta_s = self._min_value(successor, self.max_depth_minimax, alpha, beta)
+
+            if minimax_value_successor > minimax_value:
+                minimax_value = minimax_value_successor
+                next_state = successor
+
+            if beta_s > alpha:
+                alpha = beta_s
+
+            if alpha >= beta:
+                break
         return next_state
+
+    def _min_value(self,
+        state: TwoPlayerGameState,
+        depth: int,
+        alpha: float,
+        beta: float
+        ) -> (float, float, float):
+        "Min step for the minimax algorithm with alpha-beta pruning"
+
+        if state.end_of_game or depth == 0:
+            minimax_value = self.heuristic.evaluate(state)
+            alpha = minimax_value
+            beta = minimax_value
+
+        else:
+            minimax_value = np.inf
+            successors = self.generate_successors(state)
+
+            for successor in successors:
+                successor_minimax_value, alpha_s, beta_s = self._max_value(successor, depth - 1, alpha, beta)
+
+                if alpha_s < beta:
+                    beta = alpha_s
+
+                if successor_minimax_value <= minimax_value:
+                    minimax_value = successor_minimax_value
+
+                if alpha >= beta:
+                    break
+
+        return minimax_value, alpha, beta
+
+    def _max_value(self,
+        state: TwoPlayerGameState,
+        depth: int,
+        alpha: float,
+        beta: float
+        ) -> (float, float, float):
+        "Max step of the minimax algorithm with alpha-beta pruning"
+
+        if state.end_of_game or depth == 0:
+            minimax_value = self.heuristic.evaluate(state)
+            alpha = minimax_value
+            beta = minimax_value
+
+        else:
+            minimax_value = -np.inf
+            successors = self.generate_successors(state)
+
+            for successor in successors:
+                minimax_value_successor, alpha_s, beta_s = self._min_value(successor, depth - 1, alpha, beta)
+
+                if beta_s > alpha:
+                    alpha = beta_s
+
+                if minimax_value_successor > minimax_value:
+                    minimax_value = minimax_value_successor
+
+                if alpha >= beta:
+                    break
+
+        return minimax_value, alpha, beta
