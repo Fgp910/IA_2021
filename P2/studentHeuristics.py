@@ -23,6 +23,10 @@ def is_x_position(pos) -> bool:
     return pos in [(2, 2), (2, 7), (7, 2), (7, 7)]
 
 
+def is_c_position(pos) -> bool:
+    return pos in [(1, 2), (2, 1), (1, 7), (2, 8), (7, 1), (8, 2), (7, 8), (8, 7)]
+
+
 class MySolution1(StudentHeuristic):
     def get_name(self) -> str:
         return "2301_04_sol1"
@@ -39,18 +43,18 @@ class MySolution3(StudentHeuristic):
         return general_evaluation_function(state, self.evaluate)
 
     def evaluate(self, state: TwoPlayerGameState) -> float:
-        successors = state.game.generate_successors(state)
-        total = len(successors)
-        exes = 0.
-        for suc in successors:
-            for pos in suc.board.keys():
-                if is_x_position(pos) and pos not in state.board:
-                    exes += 1
+        score = 0
+        for pos in state.board:
+            if pos not in state.parent.board:       # i. e. the move played
+                if is_x_position(pos):
+                    score = -1
+                if is_c_position(pos):
+                    score = -.5
 
-        score = exes / total
+        score *= state.game.max_score
         if state.is_player_max(state.player1):
-            return - score
-        if state.is_player_max(state.player2):
             return score
+        if state.is_player_max(state.player2):
+            return - score
         else:
             raise ValueError('Player MAX not defined')
