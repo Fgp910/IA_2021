@@ -147,6 +147,7 @@ class MinimaxStrategy(Strategy):
                 successor_minimax_value = self._max_value(
                     successor, depth - 1,
                 )
+
                 if (successor_minimax_value < minimax_value):
                     minimax_value = successor_minimax_value
 
