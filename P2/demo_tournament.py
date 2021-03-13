@@ -9,11 +9,13 @@ from __future__ import annotations  # For Python 3.7
 
 import numpy as np
 
+import studentHeuristics
 from game import Player, TwoPlayerGameState, TwoPlayerMatch
-from heuristic import simple_evaluation_function
+from heuristic import simple_evaluation_function, complex_evaluation_function
+from reversi import Reversi
 from tictactoe import TicTacToe
 from tournament import StudentHeuristic, Tournament
-from studentHeuristics import MySolution1
+from studentHeuristics import MySolution1, MySolution2
 
 
 class Heuristic1(StudentHeuristic):
@@ -44,20 +46,21 @@ class Heuristic3(StudentHeuristic):
         return "heuristic"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        return simple_evaluation_function(state)
+        return complex_evaluation_function(state)
 
 
 def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
 
-    dim_board = 3
+    dim_board = 8
 
-    initial_board = np.zeros((dim_board, dim_board))
+    initial_board = None
     initial_player = player1
 
-    game = TicTacToe(
+    game = Reversi(
         player1=player1,
         player2=player2,
-        dim_board=dim_board,
+        height=dim_board,
+        width=dim_board
     )
 
     game_state = TwoPlayerGameState(
@@ -70,7 +73,7 @@ def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
 
 
 tour = Tournament(max_depth=3, init_match=create_match)
-strats = {'opt1': [MySolution1], 'opt2': [Heuristic2], 'opt3': [Heuristic3]}
+strats = {'opt1': [Heuristic2], 'opt3': [MySolution2]}
 
 n = 5
 scores, totals, names = tour.run(
